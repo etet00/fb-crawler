@@ -7,6 +7,8 @@ import pandas as pd
 from fb_crawler.setting import CHROMEDRIVER_EXE_DIR
 from fb_crawler.setting import FB_ACCOUNT
 from fb_crawler.setting import FB_PASSWORD
+from db_wrapper import DBWrapper
+
 
 # 設定 webdriver 的參數，這個 prefs 是關掉Facebook通知
 PREFS = {"profile.default_content_setting_values.notifications": 2}
@@ -33,6 +35,7 @@ class FaceBookCrawler:
         self.get_soup()
         self.get_fb_posts()
         self.save_to_xlsx()
+        self.save_to_db()
         self.driver.quit()
 
     def go_to_web_site(self):
@@ -111,3 +114,8 @@ class FaceBookCrawler:
         })
         # df.drop_duplicates()
         df.to_excel(self.util.get_output_filepath(self.name), encoding="utf-8")
+
+    def save_to_db(self):
+        db = DBWrapper()
+        for time, content, link in zip(self.p_time, self.p_content, self.p_links):
+            db.insert_post(self.name, time, content, link)

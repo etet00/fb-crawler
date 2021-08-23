@@ -46,16 +46,24 @@ class FaceBookCrawler:
 
     def close_login_wins_or_login(self):
         if self.url.split("/")[-2] == "posts":
-            # 關閉登入視窗
-            self.driver.execute_script("window.scrollTo(0,0.5 * document.body.scrollHeight);")
-            tm.sleep(3)  # self.driver.implicitly_wait(10)
-            x = self.driver.find_element_by_class_name("sx_a5c5d2")
-            x.click()
+            self.login_fb_a()
+            # # 關閉登入視窗
+            # self.driver.execute_script("window.scrollTo(0,0.5 * document.body.scrollHeight);")
+            # tm.sleep(3)  # self.driver.implicitly_wait(10)
+            # # x = self.driver.find_element_by_class_name("sx_a5c5d2")
+            # x.click()
         else:
-            self.login_fb()  # 進行登入
+            self.login_fb_b()  # 進行登入
 
-    def login_fb(self):
+    def login_fb_a(self):
+        login = self.driver.find_element_by_xpath('// *[ @ id = "mobile_login_bar"] / div[2] / div / a[1]')
+        self.do_login(login)
+
+    def login_fb_b(self):
         login = self.driver.find_element_by_xpath('//*[@id="mobile_login_bar"]/div[2]/a[2]')
+        self.do_login(login)
+
+    def do_login(self, login):
         login.click()
         tm.sleep(3)  # self.driver.implicitly_wait(5)
         login_acc = self.driver.find_element_by_id("m_login_email")
